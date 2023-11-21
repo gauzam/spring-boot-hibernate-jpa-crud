@@ -7,6 +7,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
+
 @SpringBootApplication
 public class CruddemoApplication {
 
@@ -19,12 +21,25 @@ public class CruddemoApplication {
 	public CommandLineRunner commandLineRunner(StudentDAO studentDAO){
 
 		return runner -> {
-			// createStudent(studentDAO);
+			createStudent(studentDAO);
 
-			// createMultipleStudents(studentDAO);
+			createMultipleStudents(studentDAO);
 
-			readStudent(studentDAO);
+			// readStudent(studentDAO);
+
+			queryForStudents(studentDAO);
 		};
+	}
+
+	private void queryForStudents(StudentDAO studentDAO) {
+
+		//get a list of students in the database
+		List<Student> students= studentDAO.findAll();
+
+		//display the list of students
+		for(Student tempStudent : students){
+			System.out.println(tempStudent);
+		}
 	}
 
 	private void readStudent(StudentDAO studentDAO) {
@@ -45,6 +60,7 @@ public class CruddemoApplication {
 		Student myStudent = studentDAO.findById(tempStudent.getId());
 
 		//display the student
+		//note: here the toString() of myStudent is implicitly invoked
 		System.out.println("Retrieved the Student: " + myStudent);
 
 	}
@@ -62,13 +78,15 @@ public class CruddemoApplication {
 		studentDAO.save(tempStudent1);
 		studentDAO.save(tempStudent2);
 		studentDAO.save(tempStudent3);
+
+		System.out.println("Saved given student objects.");
 	}
 
 	private void createStudent(StudentDAO studentDAO) {
 
 		//create the student object
 		System.out.println("Creating new student object...");
-		Student tempStudent = new Student("gauzam", "malhotra", "gauzam@gmail.com");
+		Student tempStudent = new Student("Gauzam", "Malhotra", "gauzam@gmail.com");
 
 		//save the student object in the database
 		System.out.println("Saving this student object in the database...");
